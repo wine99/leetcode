@@ -3,33 +3,85 @@
 # 第一行 2个数字n ( 2 \leq n \leq 3 * 10^{5} ) , m (1 \leq m \leq 3 * 10^{5}), n为快递点个数，m为单向车道个数。
 # 接下来的m行每行两个数字 u,v （1 \leq u,v \leq n, u \neq v），表示有一条站点u指向v的单向车道。
 
-n, m = map(int, input().split())
-graph = [[False] * (n + 1) for _ in range(n + 1)]
+# n, m = map(int, input().split())
+# graph = [[False] * (n + 1) for _ in range(n + 1)]
 
-queue = []
-for _ in range(m):
-    u, v = map(int, input().split())
-    graph[u][v] = True
-    queue.append((u, v))
+# queue = []
+# for _ in range(m):
+#     u, v = map(int, input().split())
+#     graph[u][v] = True
+#     queue.append((u, v))
 
-while queue:
-    u, v = queue.pop(0)
-    for i in range(1, n + 1):
-        if graph[i][u] and not graph[i][v]:
-            graph[i][v] = True
-            queue.append((i, v))
-        if graph[v][i] and not graph[u][i]:
-            graph[u][i] = True
-            queue.append((u, i))
+# while queue:
+#     u, v = queue.pop(0)
+#     for i in range(1, n + 1):
+#         if graph[i][u] and not graph[i][v]:
+#             graph[i][v] = True
+#             queue.append((i, v))
+#         if graph[v][i] and not graph[u][i]:
+#             graph[u][i] = True
+#             queue.append((u, i))
 
-ans = 0
-for x in range(1, n + 1):
-    count = 0
-    for y in range(1, n + 1):
-        if graph[x][y] or graph[y][x]:
-            count += 1
-    if count == n - 1:
-        ans += 1
-print(ans)
+# ans = 0
+# for x in range(1, n + 1):
+#     count = 0
+#     for y in range(1, n + 1):
+#         if graph[x][y] or graph[y][x]:
+#             count += 1
+#     if count == n - 1:
+#         ans += 1
+# print(ans)
 
 # 超时，通过4%
+
+# 7 7
+# 1 2
+# 2 3
+# 2 5
+# 3 4
+# 5 4
+# 6 4
+# 4 7
+
+# 2
+
+
+import random
+
+n, m = map(int, input().split())
+graph = {}
+graphT = {}
+
+for _ in range(m):
+    u, v = map(int, input().split())
+    if u not in graph:
+        graph[u] = [v]
+    else:
+        graph[u].append(v)
+    if v not in graphT:
+        graphT[v] = [u]
+    else:
+        graphT[v].append(u)
+
+
+def dfs(graph, node, path: set):
+    path.add(node)
+    if node not in graph:
+        return
+    dfs(graph, random.sample(graph[node], 1)[0], path)
+
+
+node_route = {}
+working = set(range(1, n + 1))
+while working:
+    node = working.pop()
+    path = set()
+    dfs(graph, node, path)
+    dfs(graphT, node, path)
+    node_route[node] = path
+    working -= path
+
+ans = set(range(1, n + 1))
+for node in node_route:
+    ans &= node_route[node]
+print(ans)

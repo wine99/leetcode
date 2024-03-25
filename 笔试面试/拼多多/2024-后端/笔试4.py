@@ -10,30 +10,55 @@
 from functools import cache
 
 
-@cache
-def min_del(s):
-    if not s:
-        return 0
-    if s == s[::-1]:
-        return 1
-    ans = len(s)
-    for i in range(len(s)):
-        j = len(s)
-        while j > i + 1:
-            if s[i:j] == s[i:j][::-1]:
-                break
-            j -= 1
-        print(s, i, j, s[:i] + s[j:])
-        tmp = min_del(s[:i] + s[j:]) + 1
-        ans = min(ans, tmp)
-    return ans
+# @cache
+# def min_del(s):
+#     if not s:
+#         return 0
+#     if s == s[::-1]:
+#         return 1
+#     ans = len(s)
+#     for i in range(len(s)):
+#         j = len(s)
+#         while j > i + 1:
+#             if s[i:j] == s[i:j][::-1]:
+#                 break
+#             j -= 1
+#         print(s, i, j, s[:i] + s[j:])
+#         tmp = min_del(s[:i] + s[j:]) + 1
+#         ans = min(ans, tmp)
+#     return ans
 
 
-T = int(input())
-for _ in range(T):
-    s = input()
-    print(min_del(s))
-    min_del.cache_clear()
+# T = int(input())
+# for _ in range(T):
+#     s = input()
+#     print(min_del(s))
+#     min_del.cache_clear()
 
 
 # 超时，通过0%
+
+
+def solution(s):
+    n = len(s)
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+
+    dp = [[float("inf") for _ in range(n)] for _ in range(n)]
+    for i in range(n):
+        dp[i][i] = 1
+    for j in range(1, n):
+        for i in range(j - 1, -1, -1):
+            if i == j - 1:
+                dp[i][j] = 1 if s[i] == s[j] else 2
+            elif s[i] == s[j]:
+                dp[i][j] = dp[i + 1][j - 1]
+            else:
+                for k in range(i, j):
+                    dp[i][j] = min(dp[i][j], dp[i][k] + dp[k + 1][j])
+    return dp[0][n - 1]
+
+
+print(solution(input()))

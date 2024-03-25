@@ -6,13 +6,11 @@
 # 第三行为长度为的B串，A和B仅由'0'和'1'组成
 
 
-def xor(a, b):
-    c = list(a)
+def xor1count(a, b):
+    c = 0
     for i in range(len(a)):
-        if a[i] == b[i]:
-            c[i] = "0"
-        else:
-            c[i] = "1"
+        if a[i] != b[i]:
+            c += 1
     return c
 
 
@@ -25,7 +23,7 @@ for i in range(m - n + 1):
     sub_A = A[i : i + n]
     if sub_A not in s:
         s.add(sub_A)
-        if xor(sub_A, B).count("1") % 2 == 0:
+        if xor1count(sub_A, B) % 2 == 0:
             ans += 1
 print(ans)
 

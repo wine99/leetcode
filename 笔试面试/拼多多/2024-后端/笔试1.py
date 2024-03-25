@@ -3,8 +3,9 @@
 # Bob 接下来会将剩余的数中最多 m 个数乘以 -k
 # Alice 想要剩余数之和尽可能大，Bob 想要剩余数之和尽可能小。假设 Alice 和 Bob 都足够聪明，请问最后剩余数之和是多少。
 
-# 输入T组数据
+# 输入T组数据, 每组数据第一行四个整数 n, m, k, d
 # 输出T行结果
+
 
 T = int(input())
 
@@ -13,20 +14,23 @@ for i in range(T):
     arr = list(map(int, input().split()))
     arr.sort(reverse=True)
     ans = float("-inf")
+    bob_neg = sum(arr[:m]) * -k
+    bob_pos = sum(arr[m:])
     for j in range(d + 1):
-        rest_arr = arr[j:]
-        tmp = sum(rest_arr[:m]) * -k + sum(rest_arr[m:])
+        tmp = bob_neg + bob_pos
         ans = max(tmp, ans)
+        bob_neg -= arr[j] * -k
+        if j + m < n:
+            bob_neg += arr[j + m] * -k
+            bob_pos -= arr[j + m]
     print(ans)
 
-
-# 超时，通过60%
 
 # 1
 # 3 1 1 1
 # 4 1 1
 
-# 1
+# 0
 
 
 # 1
